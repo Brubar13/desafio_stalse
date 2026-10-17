@@ -26,7 +26,11 @@ def login(loginData: LoginRequest, db: Session = Depends(get_db)):
     statement = select(User).where(User.email == loginData.email)
     user = db.scalar(statement)
 
-    if (user is None or not encrypt_provider.verify_password(loginData.password, user.password_hash) or not user.is_active):
+    if (
+        user is None 
+        or not encrypt_provider.verify_password(loginData.password, user.password_hash) 
+        or not user.is_active
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-mail ou senha inválidos",
