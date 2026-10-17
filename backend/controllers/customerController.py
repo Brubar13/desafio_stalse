@@ -113,14 +113,13 @@ def atualiza_customer(customer_id: int, dados_atualizados: PatchCustomerRequest,
             detail="Usuario Invalido",
         )
     
-
-    if customer_update.name is not None:
+    if dados_atualizados.name is not None:
         customer_update.name = dados_atualizados.name
 
-    if customer_update.email is not None:
+    if dados_atualizados.email is not None:
         customer_update.email = dados_atualizados.email
 
-    if customer_update.phone is not None:
+    if dados_atualizados.phone is not None:
         customer_update.phone = dados_atualizados.phone
    
     customer_update.updated_at = datetime.now() 

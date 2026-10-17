@@ -78,8 +78,8 @@ def atualiza_usuario(user_id: int, dados_atualizados: PatchUserRequest, db: Sess
 
     if (
         not user_loged or 
-        user_loged.role != "admin" and 
-        user_loged.id != user_update.id
+        (user_loged.role != "admin" and 
+        user_loged.id != user_update.id)
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -92,15 +92,16 @@ def atualiza_usuario(user_id: int, dados_atualizados: PatchUserRequest, db: Sess
             detail="Somente admins podem alterar a Role ou a Validade de um usuario... Contate o admin",
         )
     
-
+    print(dados_atualizados)
     if dados_atualizados.name is not None:
         user_update.name = dados_atualizados.name
 
     if dados_atualizados.email is not None:
         user_update.email = dados_atualizados.email
 
-    if dados_atualizados.password_hash is not None:
-        user_update.password_hash = encrypt_provider.hash_password(dados_atualizados.password_hash)
+    if dados_atualizados.password is not None:
+        print("Caiu na atualização de senha!")
+        user_update.password_hash = encrypt_provider.hash_password(dados_atualizados.password)
 
     if dados_atualizados.role is not None and user_loged.role == 'admin':
         user_update.role = dados_atualizados.role
@@ -120,7 +121,7 @@ def atualiza_status_priority_ticket(user_id: int, db: Session = Depends(get_db),
     statement = select(User).where(User.email == validateHeader)
     user_loged = db.scalar(statement)
 
-    if not user_loged or user_loged.role != "admin":
+    if not user_loged or (user_loged.role != "admin" and user_loged.id != user_id):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuario Invalido",
