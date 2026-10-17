@@ -13,7 +13,7 @@ class Ticket(Base):
     customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"), nullable=False)
     assigned_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     channel: Mapped[str] = mapped_column(String(50), nullable=False)
-    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    subject: Mapped[str] = mapped_column(String(500), nullable=False)
     status: Mapped[str] = mapped_column(String(20), default="open", nullable=False)
     priority: Mapped[str] = mapped_column(String(20), default="medium", nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)

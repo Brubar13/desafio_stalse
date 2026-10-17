@@ -25,7 +25,6 @@ class UsersResponse(BaseModel):
     id: int
     name: str
     email: str
-    password_hash: str
     role: str
     is_active: bool
 
@@ -59,3 +58,16 @@ class CreateCustomerRequest(BaseModel):
 class PatchTicketRequest(BaseModel):
     status: Optional[Literal['closed']] = None
     priority: Optional[Literal["low", "medium", "high"]] = None
+
+class PatchUserRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    password_hash: Optional[str] = None
+    role: Optional[Literal['user', 'admin']] = None
+    is_active: Optional[bool] = None
+
+
+class PatchCustomerRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None

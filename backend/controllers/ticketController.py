@@ -1,9 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.responses import JSONResponse
-from fastapi.security import (HTTPAuthorizationCredentials, HTTPBearer,
-                              OAuth2PasswordBearer)
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import (HTTPBearer, OAuth2PasswordBearer)
 from datetime import datetime
-from jose import JWTError
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 

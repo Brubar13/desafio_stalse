@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
-from fastapi.security import (HTTPAuthorizationCredentials, HTTPBearer,
-                              OAuth2PasswordBearer)
+from fastapi.security import (HTTPBearer, OAuth2PasswordBearer)
 from jose import JWTError
 from sqlalchemy.orm import Session
 from sqlalchemy import select
@@ -38,7 +37,7 @@ def login(loginData: LoginRequest, db: Session = Depends(get_db)):
 
     tokens = token_provider.createAcessToken({ 'sub': user.email })
 
-    return JSONResponse(content={"tokens": tokens, "nome": user.name, "email": user.email, "profileType": user.role })
+    return JSONResponse(content={"tokens": tokens, "id": user.id, "nome": user.name, "email": user.email, "profileType": user.role })
 
 @router.post("/refreshToken")
 async def refresh_token_endpoint(request: Request):

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.security import (HTTPBearer,OAuth2PasswordBearer)
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import (HTTPBearer, OAuth2PasswordBearer)
 from sqlalchemy.orm import Session
 from sqlalchemy import select
+from datetime import datetime
 
 security = HTTPBearer()
 
@@ -14,7 +15,8 @@ from models.customer import Customer
 #SCHEMAS
 from Schemas.Schemas import ( 
     CreateCustomerRequest,
-    CustomerResponse
+    CustomerResponse,
+    PatchCustomerRequest
 )
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -67,7 +69,7 @@ def atualiza_status_priority_ticket(customer_id: int, db: Session = Depends(get_
     if customer is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Ticket não encontrado",
+            detail="Customer não encontrado",
         )
     
     return customer
@@ -85,8 +87,45 @@ def get_all_customers(token: str = Depends(oauth2_scheme), db: Session = Depends
             detail="Usuario Invalido",
         )
 
+    
+
     statement = select(Customer)
     customers = db.scalars(statement).all()
 
 
     return customers
+
+@router.patch("/{customer_id}", response_model=CustomerResponse)
+def atualiza_customer(customer_id: int, dados_atualizados: PatchCustomerRequest, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    validateHeader = token_provider.validateAcessToken(token)
+    
+    statement = select(User).where(User.email == validateHeader)
+    user_loged = db.scalar(statement)
+
+    customer_update = db.get(Customer, customer_id)
+
+    if (
+        not user_loged or 
+        user_loged.role != "admin"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuario Invalido",
+        )
+    
+
+    if customer_update.name is not None:
+        customer_update.name = dados_atualizados.name
+
+    if customer_update.email is not None:
+        customer_update.email = dados_atualizados.email
+
+    if customer_update.phone is not None:
+        customer_update.phone = dados_atualizados.phone
+   
+    customer_update.updated_at = datetime.now() 
+
+    db.commit()
+    db.refresh(customer_update)
+    
+    return customer_update
