@@ -3,6 +3,7 @@ from fastapi.security import (HTTPBearer, OAuth2PasswordBearer)
 from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import select
+import requests
 
 security = HTTPBearer()
 
@@ -22,6 +23,19 @@ from Schemas.Schemas import (
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter()
+
+def disparar_webhook_n8n(ticket_id: int, status_ticket: str, priority_ticket: str):
+    webhook_url = "https://desafiostalsebrunobarbell.app.n8n.cloud/webhook-test/ticket-events"
+    
+    payload = {
+        "ticket_id": ticket_id,
+        "status": status_ticket,
+        "priority": priority_ticket
+    }
+    try:
+        requests.post(webhook_url, json=payload, timeout=3)
+    except Exception as e:
+        print(f"Erro ao disparar webhook para o n8n: {e}")
 
 @router.get("/", response_model=list[TicketResponse])
 def get_all_tickets(
@@ -124,6 +138,9 @@ def atualiza_status_priority_ticket(ticket_id: int, dados_atualizados: PatchTick
 
     db.commit()
     db.refresh(ticket)
+
+    if dados_atualizados.status == "closed" or dados_atualizados.priority == "high":
+        disparar_webhook_n8n(ticket.id, ticket.status, ticket.priority)
     
     return ticket
 
@@ -156,5 +173,8 @@ def create_new_ticket(ticket_to_create: CreateTicketRequest,token: str = Depends
     db.add(new_ticket)
     db.commit()
     db.refresh(new_ticket)
+
+    if new_ticket.status == "closed" or new_ticket.priority == "high":
+        disparar_webhook_n8n(new_ticket.id, new_ticket.status, new_ticket.priority)
 
     return new_ticket
