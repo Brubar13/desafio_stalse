@@ -1,14 +1,17 @@
 from datetime import datetime, timedelta
 from time import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from jose import jwt
 
-#CONFIG´s
-SECRET_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5MTQyMDA1OSwiaWF0IjoxNjkxNDIwMDU5fQ.GfHGTlkXIQg_2yoQwgfhpMH7hHepNeRemAbduzioWoo"
-ALGORITHM = "HS256"
-EXPIRE_IN_MINUTES = 24 * 7 * 60
-EXPIRE_REFRESH_IN_MINUTES = 24 * 8 * 60
-
+#CONFIG
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+EXPIRE_IN_MINUTES = int(os.getenv("EXPIRE_IN_MINUTES"))
+EXPIRE_REFRESH_IN_MINUTES = int(os.getenv("EXPIRE_REFRESH_IN_MINUTES"))
 
 def createAcessToken(data: dict):
     dados = data.copy()
