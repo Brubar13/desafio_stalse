@@ -6,18 +6,33 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+
+class TicketCustomerResponse(BaseModel):
+    name: str
+    email: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class TicketAssignedUserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+
+    model_config = ConfigDict(from_attributes=True)
+
 class TicketResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    customer_id: int
-    assigned_user_id: int | None
     channel: str
     subject: str
     status: str
     priority: str
     created_at: datetime
     updated_at: datetime
+
+    customer: TicketCustomerResponse | None
+    assigned_user: TicketAssignedUserResponse | None
 
 class UsersResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -56,13 +71,13 @@ class CreateCustomerRequest(BaseModel):
     phone: Optional[str] = None
 
 class PatchTicketRequest(BaseModel):
-    status: Optional[Literal['closed']] = None
+    status: Optional[Literal['closed', 'open']] = None
     priority: Optional[Literal["low", "medium", "high"]] = None
 
 class PatchUserRequest(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
-    password_hash: Optional[str] = None
+    password: Optional[str] = None
     role: Optional[Literal['user', 'admin']] = None
     is_active: Optional[bool] = None
 
@@ -71,3 +86,4 @@ class PatchCustomerRequest(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
+
