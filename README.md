@@ -123,7 +123,7 @@ EXPIRE_IN_MINUTES=10080
 EXPIRE_REFRESH_IN_MINUTES=11520
 ```
 
-- `SECRET_KEY`: chave utilizada para assinar e validar os tokens JWT. Gere uma chave aleatória e mantenha-a em segredo.
+- `SECRET_KEY`: chave utilizada para assinar e validar os tokens JWT. Gere uma chave aleatória e mantenha-a em segredo. Recomendo a ferramenta [JwtSecretGeneration](https://www.jwtsecretgenerator.com/pt-BR) para gerar a chave.
 - `ALGORITHM`: algoritmo de assinatura dos tokens.
 - `EXPIRE_IN_MINUTES`: tempo de expiração do token de acesso, em minutos. O valor de `10080` corresponde a 7 dias.
 - `EXPIRE_REFRESH_IN_MINUTES`: tempo de expiração do refresh token, em minutos. O valor de `11520` corresponde a 8 dias.
