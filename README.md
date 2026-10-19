@@ -128,7 +128,7 @@ EXPIRE_REFRESH_IN_MINUTES=11520
 - `EXPIRE_IN_MINUTES`: tempo de expiração do token de acesso, em minutos. O valor de `10080` corresponde a 7 dias.
 - `EXPIRE_REFRESH_IN_MINUTES`: tempo de expiração do refresh token, em minutos. O valor de `11520` corresponde a 8 dias.
 
-**Importante:** não compartilhe o arquivo `.env` nem envie segredos reais ao GitHub.
+**Importante:** não compartilhe o arquivo `.env`.
 
 #### Iniciar o servidor
 
